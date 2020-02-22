@@ -63,15 +63,7 @@ func (s *toDoServiceServer) Create(ctx context.Context, req *v1.CreateRequest) (
 		return nil, err
 	}
 
-	todo := req.ToDo
-	reminder := todo.Reminder.GetSeconds()
-	unixTimeUTC := time.Unix(reminder, 0)
-
-	todoEntity := TodoEntity{
-		Title:       todo.Title,
-		Description: todo.Description,
-		Reminder:    unixTimeUTC,
-	}
+	todoEntity := convertTodo(req.ToDo)
 	s.db.Create(&todoEntity)
 
 	return &v1.CreateResponse{
@@ -94,4 +86,16 @@ func (s *toDoServiceServer) Read(ctx context.Context, req *v1.ReadRequest) (*v1.
 
 func (s *toDoServiceServer) ReadAll(ctx context.Context, req *v1.ReadAllRequest) (*v1.ReadAllResponse, error) {
 	return nil, errors.New("Not implemented")
+}
+
+func convertTodo(todo *v1.ToDo) *TodoEntity {
+	unixTimeUTC := time.Unix(todo.Reminder.GetSeconds(), 0)
+
+	todoEntity := TodoEntity{
+		Title:       todo.Title,
+		Description: todo.Description,
+		Reminder:    unixTimeUTC,
+	}
+
+	return &todoEntity
 }
