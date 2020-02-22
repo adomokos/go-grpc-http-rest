@@ -35,6 +35,7 @@ func RunServer() error {
 		return fmt.Errorf("failed to open database: %v", err)
 	}
 	defer db.Close()
+	db.LogMode(true)
 
 	v1API := v1.NewToDoServiceServer(db)
 

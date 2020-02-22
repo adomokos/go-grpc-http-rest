@@ -3,17 +3,28 @@ package v1
 import (
 	"context"
 	"errors"
-	// "fmt"
-	// "time"
+	"time"
 
 	// "github.com/golang/protobuf/ptypes"
 	"github.com/jinzhu/gorm"
+
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	"github.com/adomokos/go-grpc-http-rest-microservice-tutorial/pkg/api/v1"
 )
+
+type TodoEntity struct {
+	ID          uint
+	Title       string
+	Description string
+	Reminder    time.Time
+}
+
+func (TodoEntity) TableName() string {
+	return "todos"
+}
 
 const (
 	apiVersion = "v1"
@@ -47,7 +58,26 @@ func (s *toDoServiceServer) checkAPI(api string) error {
 // }
 
 func (s *toDoServiceServer) Create(ctx context.Context, req *v1.CreateRequest) (*v1.CreateResponse, error) {
-	return nil, errors.New("Not implemented")
+	// check if the API version requested by client is supported by server
+	if err := s.checkAPI(req.Api); err != nil {
+		return nil, err
+	}
+
+	todo := req.ToDo
+	reminder := todo.Reminder.GetSeconds()
+	unixTimeUTC := time.Unix(reminder, 0)
+
+	todoEntity := TodoEntity{
+		Title:       todo.Title,
+		Description: todo.Description,
+		Reminder:    unixTimeUTC,
+	}
+	s.db.Create(&todoEntity)
+
+	return &v1.CreateResponse{
+		Api: apiVersion,
+		Id:  int64(todoEntity.ID),
+	}, nil
 }
 
 func (s *toDoServiceServer) Delete(ctx context.Context, req *v1.DeleteRequest) (*v1.DeleteResponse, error) {

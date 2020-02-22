@@ -8,7 +8,7 @@ import (
 )
 
 type Todo struct {
-	ID          uint
+	Id          uint
 	Title       string
 	Description string
 	Reminder    time.Time
@@ -25,8 +25,9 @@ func main() {
 	// Enable Logger, show detailed log
 	db.LogMode(true)
 
-	// var todo = Todo{Title: "My Todo", Description: "Some interesting todo", Reminder: time.Now()}
-	// db.Create(&todo)
+	var todo = Todo{Title: "My Todo", Description: "Some interesting todo", Reminder: time.Now()}
+	db.Create(&todo)
+	fmt.Println(todo.ID)
 
 	var todos []Todo
 	db.Find(&todos)
