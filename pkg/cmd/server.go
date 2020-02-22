@@ -8,8 +8,8 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
-	"github.com/adomokos/go-grpc-http-rest-microservice-tutorial/pkg/protocol/grpc"
-	"github.com/adomokos/go-grpc-http-rest-microservice-tutorial/pkg/service/v1"
+	"github.com/adomokos/go-grpc-http-rest/pkg/protocol/grpc"
+	"github.com/adomokos/go-grpc-http-rest/pkg/service/v1"
 )
 
 type Config struct {

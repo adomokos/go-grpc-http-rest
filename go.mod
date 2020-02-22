@@ -1,4 +1,4 @@
-module github.com/adomokos/go-grpc-http-rest-microservice-tutorial
+module github.com/adomokos/go-grpc-http-rest
 
 go 1.13
 

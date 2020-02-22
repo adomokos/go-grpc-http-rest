@@ -9,7 +9,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/adomokos/go-grpc-http-rest-microservice-tutorial/pkg/api/v1"
+	"github.com/adomokos/go-grpc-http-rest/pkg/api/v1"
 )
 
 func RunServer(ctx context.Context, v1API v1.ToDoServiceServer, port string) error {

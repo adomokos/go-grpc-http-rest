@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/adomokos/go-grpc-http-rest-microservice-tutorial/pkg/api/v1"
+	"github.com/adomokos/go-grpc-http-rest/pkg/api/v1"
 	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc"
 )
