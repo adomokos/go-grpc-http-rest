@@ -6,23 +6,22 @@ import (
 	"time"
 
 	// "github.com/golang/protobuf/ptypes"
+	"github.com/adomokos/go-grpc-http-rest-microservice-tutorial/pkg/api/v1"
 	"github.com/jinzhu/gorm"
-
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
-	"github.com/adomokos/go-grpc-http-rest-microservice-tutorial/pkg/api/v1"
 )
 
-type TodoEntity struct {
+type ToDoEntity struct {
 	ID          uint
 	Title       string
 	Description string
 	Reminder    time.Time
 }
 
-func (TodoEntity) TableName() string {
+func (ToDoEntity) TableName() string {
 	return "todos"
 }
 
@@ -88,10 +87,10 @@ func (s *toDoServiceServer) ReadAll(ctx context.Context, req *v1.ReadAllRequest)
 	return nil, errors.New("Not implemented")
 }
 
-func convertTodo(todo *v1.ToDo) *TodoEntity {
+func convertTodo(todo *v1.ToDo) *ToDoEntity {
 	unixTimeUTC := time.Unix(todo.Reminder.GetSeconds(), 0)
 
-	todoEntity := TodoEntity{
+	todoEntity := ToDoEntity{
 		Title:       todo.Title,
 		Description: todo.Description,
 		Reminder:    unixTimeUTC,
