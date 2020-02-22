@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	// "github.com/golang/protobuf/ptypes"
 	"github.com/adomokos/go-grpc-http-rest/pkg/api/v1"
+	"github.com/golang/protobuf/ptypes"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// ToDoEntity - used to map the data in the DB
 type ToDoEntity struct {
 	ID          uint
 	Title       string
@@ -21,6 +22,7 @@ type ToDoEntity struct {
 	Reminder    time.Time
 }
 
+// TableName - The table name is different than the entity name
 func (ToDoEntity) TableName() string {
 	return "todos"
 }
@@ -62,7 +64,7 @@ func (s *toDoServiceServer) Create(ctx context.Context, req *v1.CreateRequest) (
 		return nil, err
 	}
 
-	todoEntity := convertTodo(req.ToDo)
+	todoEntity := convertToTodoEntity(req.ToDo)
 	s.db.Create(&todoEntity)
 
 	return &v1.CreateResponse{
@@ -72,6 +74,10 @@ func (s *toDoServiceServer) Create(ctx context.Context, req *v1.CreateRequest) (
 }
 
 func (s *toDoServiceServer) Delete(ctx context.Context, req *v1.DeleteRequest) (*v1.DeleteResponse, error) {
+	if err := s.checkAPI(req.Api); err != nil {
+		return nil, err
+	}
+
 	return nil, errors.New("Not implemented")
 }
 
@@ -80,14 +86,26 @@ func (s *toDoServiceServer) Update(ctx context.Context, req *v1.UpdateRequest) (
 }
 
 func (s *toDoServiceServer) Read(ctx context.Context, req *v1.ReadRequest) (*v1.ReadResponse, error) {
-	return nil, errors.New("Not implemented")
+	if err := s.checkAPI(req.Api); err != nil {
+		return nil, err
+	}
+
+	var todoEntity = ToDoEntity{ID: uint(req.Id)}
+	s.db.First(&todoEntity)
+
+	todo := convertToToDo(&todoEntity)
+
+	return &v1.ReadResponse{
+		Api:  apiVersion,
+		ToDo: todo,
+	}, nil
 }
 
 func (s *toDoServiceServer) ReadAll(ctx context.Context, req *v1.ReadAllRequest) (*v1.ReadAllResponse, error) {
 	return nil, errors.New("Not implemented")
 }
 
-func convertTodo(todo *v1.ToDo) *ToDoEntity {
+func convertToTodoEntity(todo *v1.ToDo) *ToDoEntity {
 	unixTimeUTC := time.Unix(todo.Reminder.GetSeconds(), 0)
 
 	todoEntity := ToDoEntity{
@@ -97,4 +115,21 @@ func convertTodo(todo *v1.ToDo) *ToDoEntity {
 	}
 
 	return &todoEntity
+}
+
+func convertToToDo(todoEntity *ToDoEntity) *v1.ToDo {
+	timestampProto, err := ptypes.TimestampProto(todoEntity.Reminder)
+
+	if err != nil {
+		panic("Couldn't convert Time to Timestamp")
+	}
+
+	todo := v1.ToDo{
+		Id:          int64(todoEntity.ID),
+		Title:       todoEntity.Title,
+		Description: todoEntity.Description,
+		Reminder:    timestampProto,
+	}
+
+	return &todo
 }
