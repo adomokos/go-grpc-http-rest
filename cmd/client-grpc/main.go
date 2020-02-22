@@ -33,13 +33,13 @@ func main() {
 	defer cancel()
 
 	// Create
-	id := callCreate(ctx, c)
+	id := callCreate(ctx, &c)
 
 	// Read
 	callRead(ctx, c, id)
 }
 
-func callCreate(ctx context.Context, c v1.ToDoServiceClient) int64 {
+func callCreate(ctx context.Context, c *v1.ToDoServiceClient) int64 {
 	t := time.Now().In(time.UTC)
 	reminder, _ := ptypes.TimestampProto(t)
 	pfx := t.Format(time.RFC3339Nano)
@@ -63,7 +63,7 @@ func callCreate(ctx context.Context, c v1.ToDoServiceClient) int64 {
 	return res1.Id
 }
 
-func callRead(ctx context.Context, c v1.ToDoServiceClient, id int64) {
+func callRead(ctx context.Context, c v1.ToDoServiceClient, id int64) *v1.ToDo {
 	req2 := v1.ReadRequest{
 		Api: apiVersion,
 		Id:  id,
@@ -76,4 +76,5 @@ func callRead(ctx context.Context, c v1.ToDoServiceClient, id int64) {
 
 	log.Printf("Read result: <%+v>\n\n", res2)
 
+	return res2.ToDo
 }
