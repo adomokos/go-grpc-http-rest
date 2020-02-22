@@ -2,10 +2,11 @@ package v1
 
 import (
 	"context"
-	"fmt"
-	"time"
+	"errors"
+	// "fmt"
+	// "time"
 
-	"github.com/golang/protobuf/ptypes"
+	// "github.com/golang/protobuf/ptypes"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"google.golang.org/grpc/codes"
@@ -19,10 +20,10 @@ const (
 )
 
 type toDoServiceServer struct {
-	db *DB
+	db *gorm.DB
 }
 
-func NewToDoServiceServer(db *DB) v1.ToDoServiceServer {
+func NewToDoServiceServer(db *gorm.DB) v1.ToDoServiceServer {
 	return &toDoServiceServer{db: db}
 }
 
@@ -36,11 +37,31 @@ func (s *toDoServiceServer) checkAPI(api string) error {
 	return nil
 }
 
-func (s *toDoServiceServer) connect(ctx context.Context) (*DB, error) {
-	db, err = &toDoServiceServer.Open("sqlite3", "db/todo-db.sqlt")
-	if err != nil {
-		return nil, status.Error(codes.Unknown, "failed to connect to database-> "+err.Error())
-	}
+// func (s *toDoServiceServer) connect(ctx context.Context) (*gorm.DB, error) {
+// db, err = &toDoServiceServer.Open("sqlite3", "db/todo-db.sqlt")
+// if err != nil {
+// return nil, status.Error(codes.Unknown, "failed to connect to database-> "+err.Error())
+// }
 
-	return db, nil
+// return db, nil
+// }
+
+func (s *toDoServiceServer) Create(ctx context.Context, req *v1.CreateRequest) (*v1.CreateResponse, error) {
+	return nil, errors.New("Not implemented")
+}
+
+func (s *toDoServiceServer) Delete(ctx context.Context, req *v1.DeleteRequest) (*v1.DeleteResponse, error) {
+	return nil, errors.New("Not implemented")
+}
+
+func (s *toDoServiceServer) Update(ctx context.Context, req *v1.UpdateRequest) (*v1.UpdateResponse, error) {
+	return nil, errors.New("Not implemented")
+}
+
+func (s *toDoServiceServer) Read(ctx context.Context, req *v1.ReadRequest) (*v1.ReadResponse, error) {
+	return nil, errors.New("Not implemented")
+}
+
+func (s *toDoServiceServer) ReadAll(ctx context.Context, req *v1.ReadAllRequest) (*v1.ReadAllResponse, error) {
+	return nil, errors.New("Not implemented")
 }

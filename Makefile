@@ -3,7 +3,6 @@ PROG = ${APP_NAME}
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
 
-.PHONY: build
 build: ## Builds application artifacts
 	# go build -ldflags="-X main.version=${VERSION} -X main.gitSHA=${GIT_SHA}" -o ${PROG} cmd/server.go
 	go build -o ${PROG} cmd/server/main.go
@@ -14,9 +13,13 @@ db.rebuild: ## Rebuilds the DBs
 	@echo 'Done.'
 .PHONY: rebuild-dbs
 
-db.console: ## Open the db-console
+db.console: ## Opens the db-console
 	sqlite3 db/todo-db.sqlt
 .PHONY: db-console
+
+run-server: ## Runs the server
+	./$(APP_NAME) -db-file=db/todo-db.sqlt -grpc-port=9090
+.PHONY: run-server
 
 
 help: ## Prints this help command

@@ -5,6 +5,9 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
+
 	"github.com/adomokos/go-grpc-http-rest-microservice-tutorial/pkg/protocol/grpc"
 	"github.com/adomokos/go-grpc-http-rest-microservice-tutorial/pkg/service/v1"
 )
@@ -24,10 +27,10 @@ func RunServer() error {
 	flag.Parse()
 
 	if len(cfg.GRPCPort) == 0 {
-		return fmt.Error("invalid TCP port for gRPC server: '%s'", cfg.GRPCPort)
+		return fmt.Errorf("invalid TCP port for gRPC server: '%s'", cfg.GRPCPort)
 	}
 
-	db, err = &toDoServiceServer.Open("sqlite3", cfg.DatastoreDBFile)
+	db, err := gorm.Open("sqlite3", cfg.DatastoreDBFile)
 	if err != nil {
 		return fmt.Errorf("failed to open database: %v", err)
 	}
