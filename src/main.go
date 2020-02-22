@@ -15,7 +15,11 @@ type Todo struct {
 }
 
 func main() {
-	db, _ := gorm.Open("sqlite3", "db/todo-db.sqlt")
+	db, err := gorm.Open("sqlite3", "db/todo-db.sqlt")
+	if err != nil {
+		panic("failed to connect database")
+	}
+
 	defer db.Close()
 
 	// Enable Logger, show detailed log

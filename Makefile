@@ -1,5 +1,12 @@
+APP_NAME = grpc-app
+PROG = ${APP_NAME}
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
+
+.PHONY: build
+build: ## Builds application artifacts
+	# go build -ldflags="-X main.version=${VERSION} -X main.gitSHA=${GIT_SHA}" -o ${PROG} cmd/server.go
+	go build -o ${PROG} cmd/server/main.go
 
 db.rebuild: ## Rebuilds the DBs
 	@echo 'Rebuilding the DB...'
