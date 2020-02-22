@@ -2,8 +2,8 @@
 set -e
 
 run() {
-  rm -f ./db/explorer-db.sqlt
-  sqlite3 ./db/explorer-db.sqlt < ./resources/sql/schema.sql
+  rm -f ./db/todo-db.sqlt
+  sqlite3 ./db/todo-db.sqlt < ./resources/sql/schema.sql
 }
 
 $*

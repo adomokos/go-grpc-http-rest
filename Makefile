@@ -8,7 +8,7 @@ db.rebuild: ## Rebuilds the DBs
 .PHONY: rebuild-dbs
 
 db.console: ## Open the db-console
-	sqlite3 db/explorer-db.sqlt
+	sqlite3 db/todo-db.sqlt
 .PHONY: db-console
 
 
