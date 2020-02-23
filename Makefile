@@ -20,7 +20,7 @@ db.console: ## Opens the db-console
 .PHONY: db-console
 
 run-server: ## Runs the server
-	./$(PROG) -db-file=db/todo-db.sqlt -grpc-port=9090
+	./$(PROG) -db-file=db/todo-db.sqlt -grpc-port=9090 -http-port=8080
 .PHONY: run-server
 
 run-client: ## Runs the client
@@ -30,6 +30,14 @@ run-client: ## Runs the client
 gen-files-from-proto: ## Generates swagger JSON and Go files from proto file
 	sh third_party/protoc-gen.sh
 .PHONY: gen-files-from-proto
+
+get-one-http: ## Executes a CURL request to get a ToDo
+	curl -X GET -H "Content-Type: application/json" http://localhost:8080/v1/todo/1
+.PHONY: get-one-http
+
+get-all-http: ## Executes a CURL request to get all ToDos
+	curl -X GET -H "Content-Type: application/json" http://localhost:8080/v1/todo/all
+.PHONY: get-all-http
 
 
 help: ## Prints this help command

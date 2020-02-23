@@ -45,7 +45,7 @@ func main() {
 	callReadAll(ctx, c)
 
 	// Delete
-	callDelete(ctx, c, id)
+	// callDelete(ctx, c, id)
 }
 
 func callCreate(ctx context.Context, c v1.ToDoServiceClient) int64 {

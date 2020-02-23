@@ -9,11 +9,15 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
 	"github.com/adomokos/go-grpc-http-rest/pkg/protocol/grpc"
+	"github.com/adomokos/go-grpc-http-rest/pkg/protocol/rest"
 	"github.com/adomokos/go-grpc-http-rest/pkg/service/v1"
 )
 
 type Config struct {
-	GRPCPort        string
+	GRPCPort string
+	// HTTP/REST gateway start parameters section
+	// HTTPPort is TCP port to listen by HTTP/REST gateway
+	HTTPPort        string
 	DatastoreDBFile string
 }
 
@@ -23,11 +27,16 @@ func RunServer() error {
 	// get configuration
 	var cfg Config
 	flag.StringVar(&cfg.GRPCPort, "grpc-port", "", "gRPC port to bind")
+	flag.StringVar(&cfg.HTTPPort, "http-port", "", "HTTP port to bind")
 	flag.StringVar(&cfg.DatastoreDBFile, "db-file", "", "Database file path")
 	flag.Parse()
 
 	if len(cfg.GRPCPort) == 0 {
 		return fmt.Errorf("invalid TCP port for gRPC server: '%s'", cfg.GRPCPort)
+	}
+
+	if len(cfg.HTTPPort) == 0 {
+		return fmt.Errorf("invalid TCP port for HTTP gateway: '%s'", cfg.HTTPPort)
 	}
 
 	db, err := gorm.Open("sqlite3", cfg.DatastoreDBFile)
@@ -38,6 +47,10 @@ func RunServer() error {
 	db.LogMode(true)
 
 	v1API := v1.NewToDoServiceServer(db)
+
+	go func() {
+		_ = rest.RunServer(ctx, cfg.GRPCPort, cfg.HTTPPort)
+	}()
 
 	return grpc.RunServer(ctx, v1API, cfg.GRPCPort)
 }
