@@ -27,6 +27,11 @@ run-client: ## Runs the client
 	./$(CLIENT_NAME) -server=localhost:9090
 .PHONY: run-server
 
+gen-files-from-proto: ## Generates swagger JSON and Go files from proto file
+	sh third_party/protoc-gen.sh
+.PHONY: gen-files-from-proto
+
+
 help: ## Prints this help command
 	@grep -E '^[a-zA-Z0-9\._-]+:.*?## .*$$' $(MAKEFILE_LIST) |\
 		sort | \
