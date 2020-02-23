@@ -108,7 +108,22 @@ func (s *toDoServiceServer) Read(ctx context.Context, req *v1.ReadRequest) (*v1.
 }
 
 func (s *toDoServiceServer) ReadAll(ctx context.Context, req *v1.ReadAllRequest) (*v1.ReadAllResponse, error) {
-	return nil, errors.New("Not implemented")
+	if err := s.checkAPI(req.Api); err != nil {
+		return nil, err
+	}
+
+	var todoEntities []ToDoEntity
+	s.db.Find(&todoEntities)
+
+	todos := make([]*v1.ToDo, len(todoEntities))
+	for i, v := range todoEntities {
+		todos[i] = convertToToDo(&v)
+	}
+
+	return &v1.ReadAllResponse{
+		Api:   apiVersion,
+		ToDos: todos,
+	}, nil
 }
 
 func convertToTodoEntity(todo *v1.ToDo) *ToDoEntity {

@@ -40,6 +40,9 @@ func main() {
 
 	// Update
 	callUpdate(ctx, c, todo)
+
+	// ReadAll
+	callReadAll(ctx, c)
 }
 
 func callCreate(ctx context.Context, c v1.ToDoServiceClient) int64 {
@@ -98,4 +101,16 @@ func callUpdate(ctx context.Context, c v1.ToDoServiceClient, todo *v1.ToDo) int6
 	log.Printf("Update result: <%+v>\n\n", res3)
 
 	return res3.Updated
+}
+
+func callReadAll(ctx context.Context, c v1.ToDoServiceClient) {
+	req4 := v1.ReadAllRequest{
+		Api: apiVersion,
+	}
+
+	res4, err := c.ReadAll(ctx, &req4)
+	if err != nil {
+		log.Fatalf("ReadAll failed: %v", err)
+	}
+	log.Printf("ReadAll result: <%+v>\n\n", res4)
 }
