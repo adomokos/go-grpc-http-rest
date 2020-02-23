@@ -2,7 +2,7 @@ package v1
 
 import (
 	"context"
-	"errors"
+	// "errors"
 	"time"
 
 	"github.com/adomokos/go-grpc-http-rest/pkg/api/v1"
@@ -74,7 +74,17 @@ func (s *toDoServiceServer) Create(ctx context.Context, req *v1.CreateRequest) (
 }
 
 func (s *toDoServiceServer) Delete(ctx context.Context, req *v1.DeleteRequest) (*v1.DeleteResponse, error) {
-	return nil, errors.New("Not implemented")
+	if err := s.checkAPI(req.Api); err != nil {
+		return nil, err
+	}
+
+	todoEntity := ToDoEntity{ID: uint(req.Id)}
+	s.db.Delete(&todoEntity)
+
+	return &v1.DeleteResponse{
+		Api:     apiVersion,
+		Deleted: req.Id,
+	}, nil
 }
 
 func (s *toDoServiceServer) Update(ctx context.Context, req *v1.UpdateRequest) (*v1.UpdateResponse, error) {

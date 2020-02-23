@@ -43,6 +43,9 @@ func main() {
 
 	// ReadAll
 	callReadAll(ctx, c)
+
+	// Delete
+	callDelete(ctx, c, id)
 }
 
 func callCreate(ctx context.Context, c v1.ToDoServiceClient) int64 {
@@ -113,4 +116,17 @@ func callReadAll(ctx context.Context, c v1.ToDoServiceClient) {
 		log.Fatalf("ReadAll failed: %v", err)
 	}
 	log.Printf("ReadAll result: <%+v>\n\n", res4)
+}
+
+func callDelete(ctx context.Context, c v1.ToDoServiceClient, id int64) {
+	req5 := v1.DeleteRequest{
+		Api: apiVersion,
+		Id:  id,
+	}
+
+	res5, err := c.Delete(ctx, &req5)
+	if err != nil {
+		log.Fatalf("Delete failed: %v", err)
+	}
+	log.Printf("Delete result: <%+v>\n\n", res5)
 }
