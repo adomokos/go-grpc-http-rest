@@ -74,15 +74,21 @@ func (s *toDoServiceServer) Create(ctx context.Context, req *v1.CreateRequest) (
 }
 
 func (s *toDoServiceServer) Delete(ctx context.Context, req *v1.DeleteRequest) (*v1.DeleteResponse, error) {
-	if err := s.checkAPI(req.Api); err != nil {
-		return nil, err
-	}
-
 	return nil, errors.New("Not implemented")
 }
 
 func (s *toDoServiceServer) Update(ctx context.Context, req *v1.UpdateRequest) (*v1.UpdateResponse, error) {
-	return nil, errors.New("Not implemented")
+	if err := s.checkAPI(req.Api); err != nil {
+		return nil, err
+	}
+
+	todoEntity := convertToTodoEntity(req.ToDo)
+	s.db.Save(&todoEntity)
+
+	return &v1.UpdateResponse{
+		Api:     apiVersion,
+		Updated: int64(todoEntity.ID),
+	}, nil
 }
 
 func (s *toDoServiceServer) Read(ctx context.Context, req *v1.ReadRequest) (*v1.ReadResponse, error) {
@@ -109,6 +115,7 @@ func convertToTodoEntity(todo *v1.ToDo) *ToDoEntity {
 	unixTimeUTC := time.Unix(todo.Reminder.GetSeconds(), 0)
 
 	todoEntity := ToDoEntity{
+		ID:          uint(todo.Id),
 		Title:       todo.Title,
 		Description: todo.Description,
 		Reminder:    unixTimeUTC,

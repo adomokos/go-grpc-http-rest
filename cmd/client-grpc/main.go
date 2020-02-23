@@ -33,13 +33,16 @@ func main() {
 	defer cancel()
 
 	// Create
-	id := callCreate(ctx, &c)
+	id := callCreate(ctx, c)
 
 	// Read
-	callRead(ctx, c, id)
+	todo := callRead(ctx, c, id)
+
+	// Update
+	callUpdate(ctx, c, todo)
 }
 
-func callCreate(ctx context.Context, c *v1.ToDoServiceClient) int64 {
+func callCreate(ctx context.Context, c v1.ToDoServiceClient) int64 {
 	t := time.Now().In(time.UTC)
 	reminder, _ := ptypes.TimestampProto(t)
 	pfx := t.Format(time.RFC3339Nano)
@@ -77,4 +80,22 @@ func callRead(ctx context.Context, c v1.ToDoServiceClient, id int64) *v1.ToDo {
 	log.Printf("Read result: <%+v>\n\n", res2)
 
 	return res2.ToDo
+}
+
+func callUpdate(ctx context.Context, c v1.ToDoServiceClient, todo *v1.ToDo) int64 {
+	todo.Description = todo.Description + " + updated"
+
+	req3 := v1.UpdateRequest{
+		Api:  apiVersion,
+		ToDo: todo,
+	}
+
+	res3, err := c.Update(ctx, &req3)
+	if err != nil {
+		log.Fatalf("Update failed: %v", err)
+	}
+
+	log.Printf("Update result: <%+v>\n\n", res3)
+
+	return res3.Updated
 }
