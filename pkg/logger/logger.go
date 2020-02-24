@@ -62,7 +62,7 @@ func Init(lvl int, timeFormat string) error {
 		consoleEncoder := zapcore.NewJSONEncoder(ecfg)
 
 		// Join the outputs, encoder, and level-handling functions into zapcore.
-		core := zapcore.NewTree(
+		core := zapcore.NewTee(
 			zapcore.NewCore(consoleEncoder, consoleErrors, highPriority),
 			zapcore.NewCore(consoleEncoder, consoleInfos, lowPriority),
 		)
