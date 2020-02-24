@@ -20,7 +20,8 @@ db.console: ## Opens the db-console
 .PHONY: db-console
 
 run-server: ## Runs the server
-	./$(PROG) -db-file=db/todo-db.sqlt -grpc-port=9090 -http-port=8080
+	./$(PROG) -db-file=db/todo-db.sqlt -grpc-port=9090 -http-port=8080 \
+		-log-level=-1 -log-time-format=2006-01-02T15:04:05.999999999Z07:00
 .PHONY: run-server
 
 run-client: ## Runs the client
