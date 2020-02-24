@@ -31,13 +31,18 @@ gen-files-from-proto: ## Generates swagger JSON and Go files from proto file
 	sh third_party/protoc-gen.sh
 .PHONY: gen-files-from-proto
 
-get-one-http: ## Executes a CURL request to get a ToDo
+http.get-one: ## Executes a CURL request to get a ToDo
 	curl -X GET -H "Content-Type: application/json" http://localhost:8080/v1/todo/1
-.PHONY: get-one-http
+.PHONY: http.get-one
 
-get-all-http: ## Executes a CURL request to get all ToDos
+http.get-all: ## Executes a CURL request to get all ToDos
 	curl -X GET -H "Content-Type: application/json" http://localhost:8080/v1/todo/all
-.PHONY: get-all-http
+.PHONY: http.get-all
+
+http.create: ## Executes a CURL request to create a ToDo
+	curl -X POST -H "Content-Type: application/json" http://localhost:8080/v1/todo \
+		--data '{"api":"v1","toDo": {"title": "My Title - http", "description": "My Description", "reminder": "2020-02-24T00:19:53.302145Z"}}'
+.PHONY: http.create
 
 
 help: ## Prints this help command
